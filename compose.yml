@@ -26,64 +26,94 @@ services:
   ###### COLONIAs ######
   ### KAFKAs ###
   zookeeper-aquarion:
-    image: wurstmeister/zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
   zookeeper-greenlab:
-    image: wurstmeister/zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
   zookeeper-terramorf:
-    image: wurstmeister/zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
   zookeeper-crystalia:
-    image: wurstmeister/zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
   zookeeper-dustwind:
-    image: wurstmeister/zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
   kafka-aquarion:
-    image: wurstmeister/kafka
+    image: confluentinc/cp-kafka:latest
     ports:
       - "9092:9092"
+    hostname: kafka-aquarion
     environment:
+      KAFKA_BROKER_ID: 1
       KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-aquarion:9093,OUTSIDE://${HOST_IP}:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-aquarion:2181
   kafka-greenlab:
-    image: wurstmeister/kafka
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka-greenlab
     ports:
       - "9093:9093"
     environment:
+      KAFKA_BROKER_ID: 1
       KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-greenlab:9093,OUTSIDE://${HOST_IP}:9097
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9097
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-greenlab:2181
   kafka-terramorf:
-    image: wurstmeister/kafka
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka-terramorf
     ports:
       - "9094:9094"
     environment:
+      KAFKA_BROKER_ID: 1
       KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-terramorf:9093,OUTSIDE://${HOST_IP}:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-terramorf:2181
   kafka-crystalia:
-    image: wurstmeister/kafka
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka-crystalia
     ports:
       - "9095:9095"
     environment:
+      KAFKA_BROKER_ID: 1
       KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-crystalia:9093,OUTSIDE://${HOST_IP}:9095
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9095
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-crystalia:2181
   kafka-dustwind:
-    image: wurstmeister/kafka
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka-dustwind
     ports:
       - "9096:9096"
     environment:
+      KAFKA_BROKER_ID: 1
       KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-dustwind:9093,OUTSIDE://${HOST_IP}:9096
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9096
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-dustwind:2181
   ### POSTGRESes ###
   postgres-aquarion:
