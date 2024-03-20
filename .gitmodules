@@ -1,3 +1,6 @@
 [submodule "AtomHack-Final-frontend"]
 	path = AtomHack-Final-frontend
 	url = https://github.com/Tifftal/AtomHack-Final-frontend.git
+[submodule "AtomHackFinalAuthService"]
+	path = AtomHackFinalAuthService
+	url = https://github.com/certified-juniors/AtomHackFinalAuthService
