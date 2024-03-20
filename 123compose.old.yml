@@ -1,0 +1,271 @@
+version: "3"
+volumes:
+  periodsdb-data:
+  marsdb-data:
+  earthdb-data:
+  marsminio-data:
+  earthminio-data:
+  delayservice-tmp:
+
+services:
+  # mars
+  periodsdb:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=${PERIODS_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${PERIODS_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${PERIODS_POSTGRES_DB}
+    volumes:
+      - periodsdb-data:/var/lib/postgresql/data
+  marsdb:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=${MARS_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${MARS_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${MARS_POSTGRES_DB}
+    volumes:
+      - marsdb-data:/var/lib/postgresql/data
+  earthdb:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=${EARTH_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${EARTH_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${EARTH_POSTGRES_DB}
+    volumes:
+      - earthdb-data:/var/lib/postgresql/data
+  earthminio:
+    image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
+    ports:
+      - "36001:9000"
+      - "36011:9001"
+    volumes:
+      - earthminio-data:/data
+    environment:
+      - MINIO_ROOT_USER=${EARTH_MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${EARTH_MINIO_ROOT_PASSWORD}
+    command: server --console-address ":9001" /data
+  marsminio:
+    image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
+    ports:
+      - "36002:9000"
+      - "36022:9001"
+    volumes:
+      - marsminio-data:/data
+    environment:
+      - MINIO_ROOT_USER=${MARS_MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MARS_MINIO_ROOT_PASSWORD}
+    command: server --console-address ":9001" /data
+  createbuckets:
+    image: quay.io/minio/mc:RELEASE.2023-12-20T07-14-22Z-cpuv1
+    environment:
+      - EARTH_MINIO_ROOT_USER=${EARTH_MINIO_ROOT_USER}
+      - EARTH_MINIO_ROOT_PASSWORD=${EARTH_MINIO_ROOT_PASSWORD}
+      - MARS_MINIO_ROOT_USER=${MARS_MINIO_ROOT_USER}
+      - MARS_MINIO_ROOT_PASSWORD=${MARS_MINIO_ROOT_PASSWORD}
+      - EARTH_MINIO_BUCKET=${EARTH_MINIO_BUCKET}
+      - MARS_MINIO_BUCKET=${MARS_MINIO_BUCKET}
+    depends_on:
+      - earthminio
+      - marsminio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set earthminio http://earthminio:9000 $EARTH_MINIO_ROOT_USER $EARTH_MINIO_ROOT_PASSWORD;
+      /usr/bin/mc alias set marsminio  http://marsminio:9000  $MARS_MINIO_ROOT_USER  $MARS_MINIO_ROOT_PASSWORD;
+      /usr/bin/mc mb earthminio/$EARTH_MINIO_BUCKET;
+      /usr/bin/mc mb marsminio/$MARS_MINIO_BUCKET;
+      /usr/bin/mc anonymous set public earthminio/$EARTH_MINIO_BUCKET;
+      /usr/bin/mc anonymous set public marsminio/$MARS_MINIO_BUCKET;
+      exit 0;
+      "
+  adminer:
+    image: adminer:latest
+    ports:
+      - "33333:8080"
+    depends_on:
+      - periodsdb
+      - earthdb
+      - marsdb
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    restart: always
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${MARS_BOOTSTRAP_SERVER},PLAINTEXT_HOST://${MARS_KAFKA_CONSUMER}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT_HOST:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  initservice:
+    build:
+      context: ./InitService
+    ports:
+      - "${IS_PORT}:${IS_PORT}"
+    depends_on:
+      - periodsdb
+    environment:
+      DATABASE_URL: jdbc:postgresql://${PERIODS_POSTGRES_URL}
+      PORT: "${IS_PORT}"
+      DATABASE_USERNAME: ${PERIODS_POSTGRES_USER}
+      DATABASE_PASSWORD: ${PERIODS_POSTGRES_PASSWORD}
+  delayservice:
+    build:
+      context: ./DelayService
+      args:
+        PORT: "${DS_PORT}"
+        HOST: http://${EARTH_SERVICE_HOST}:${EARTH_SERVICE_PORT}
+    ports:
+      - "${DS_PORT}:${DS_PORT}"
+    volumes:
+      - delayservice-tmp:/tmp
+    depends_on:
+      - periodsdb
+    environment:
+      HOST: http://${EARTH_SERVICE_HOST}:${EARTH_SERVICE_PORT}
+      PORT: "${DS_PORT}"
+  marsback:
+    build:
+      context: ./AtomHackMarsService
+    ports:
+      - "${MARS_SERVICE_PORT}:${MARS_SERVICE_PORT}"
+    restart: always
+    depends_on:
+      - kafka
+      - marsdb
+      - marsminio
+    environment:
+      MARS_DATABASE_AUTO_MIGRATE: ${MARS_DATABASE_AUTO_MIGRATE}
+      MARS_POSTGRES_USER: ${MARS_POSTGRES_USER}
+      MARS_POSTGRES_PASSWORD: ${MARS_POSTGRES_PASSWORD}
+      MARS_POSTGRES_DB: ${MARS_POSTGRES_DB}
+      MARS_POSTGRES_HOST: ${MARS_POSTGRES_HOST}
+      MARS_POSTGRES_URL: postgres://${MARS_POSTGRES_USER}:${MARS_POSTGRES_PASSWORD}@${MARS_POSTGRES_HOST}/${MARS_POSTGRES_DB}
+      MARS_MINIO_ROOT_USER: ${MARS_MINIO_ROOT_USER}
+      MARS_MINIO_ROOT_PASSWORD: ${MARS_MINIO_ROOT_PASSWORD}
+      MARS_MINIO_HOST: ${MARS_MINIO_HOST}
+      MARS_MINIO_PORT: ${MARS_MINIO_PORT}
+      MARS_MINIO_URL: ${MARS_MINIO_URL}
+      MARS_MINIO_BUCKET: ${MARS_MINIO_BUCKET}
+      MARS_SERVICE_HOST: ${MARS_SERVICE_HOST}
+      MARS_SERVICE_PORT: ${MARS_SERVICE_PORT}
+      MARS_BOOTSTRAP_SERVER: ${MARS_BOOTSTRAP_SERVER}
+      MARS_KAFKA_TOPIC: ${MARS_KAFKA_TOPIC}
+      MARS_MAX_RETRY: ${MARS_MAX_RETRY}
+      MARS_RETURN_SUCCESSES: ${MARS_RETURN_SUCCESSES}
+  atominit:
+    build:
+      context: ./atomHack-system-react
+      args:
+        - VITE_DELAY_SERVICE_HOST=${DS_URL}
+        - VITE_INITAPI_SERVICE_HOST=${IS_URL}
+        - VITE_SENDER_SERVICE_HOST=${SS_URL}
+        - VITE_EARTH_FRONTEND_HOST=${LINK_TO_EARTH_HOST}
+        - VITE_MARS_FRONTEND_HOST=${LINK_TO_MARS_HOST}
+        - VITE_INIT_FRONTEND_HOST=${LINK_TO_INIT_HOST}
+    environment:
+      - VITE_DELAY_SERVICE_HOST=${DS_URL}
+      - VITE_INITAPI_SERVICE_HOST=${IS_URL}
+      - VITE_SENDER_SERVICE_HOST=${SS_URL}
+      - VITE_EARTH_FRONTEND_HOST=${LINK_TO_EARTH_HOST}
+      - VITE_MARS_FRONTEND_HOST=${LINK_TO_MARS_HOST}
+      - VITE_INIT_FRONTEND_HOST=${LINK_TO_INIT_HOST}
+    ports:
+      - "30003:80"
+    depends_on:
+      - initservice
+      - delayservice
+  senderservice:
+    build:
+      context: ./AtomHackSenderService
+    ports:
+      - "${SS_PORT}:3000"
+    restart: always
+    depends_on:
+      - kafka
+      - periodsdb
+      - marsminio
+      - delayservice
+    environment:
+      SS_PORT: "${SS_PORT}"
+      MARS_KAFKA_CONSUMER: ${MARS_KAFKA_CONSUMER}
+      MARS_KAFKA_TOPIC: ${MARS_KAFKA_TOPIC}
+      DS_PORT: ${DS_PORT}
+      DS_HOST: ${DS_HOST}
+      DS_URL: ${DS_URL}
+      MARS_MINIO_ROOT_USER: ${MARS_MINIO_ROOT_USER}
+      MARS_MINIO_ROOT_PASSWORD: ${MARS_MINIO_ROOT_PASSWORD}
+      MARS_MINIO_BUCKET: ${MARS_MINIO_BUCKET}
+      MARS_MINIO_HOST: ${MARS_MINIO_HOST}
+      MARS_MINIO_PORT: ${MARS_MINIO_PORT}
+      PERIODS_POSTGRES_USER: ${PERIODS_POSTGRES_USER}
+      PERIODS_POSTGRES_PASSWORD: ${PERIODS_POSTGRES_PASSWORD}
+      PERIODS_POSTGRES_DB: ${PERIODS_POSTGRES_DB}
+      PERIODS_POSTGRES_URL: ${PERIODS_POSTGRES_URL}
+      PERIODS_POSTGRES_HOST: ${PERIODS_POSTGRES_HOST}
+      MARS_HOST: http://${MARS_SERVICE_HOST}
+      MARS_PORT: ${MARS_SERVICE_PORT}
+  atommars:
+    build:
+      context: ./AtomHackFrontend
+      args:
+        - VITE_MARS_API=${MARS_BACKEND_URL}
+        - VITE_MARS_MINIO=${MARS_MINIO_URL}
+        - VITE_SENDER_SERVICE=${SS_URL}
+    environment:
+      - VITE_MARS_API=${MARS_BACKEND_URL}
+      - VITE_MARS_MINIO=${MARS_MINIO_URL}
+      - VITE_SENDER_SERVICE=${SS_URL}
+    ports:
+      - "30002:80"
+    depends_on:
+      - marsback
+      - marsminio
+  earthback:
+    restart: always
+    build:
+      context: ./AtomHackEarthBackend
+    ports:
+      - "${EARTH_SERVICE_PORT}:${EARTH_SERVICE_PORT}"
+    depends_on:
+      - earthdb
+      - earthminio
+    environment:
+      EARTH_DATABASE_AUTO_MIGRATE: ${EARTH_DATABASE_AUTO_MIGRATE}
+      EARTH_MINIO_URL: ${EARTH_MINIO_URL}
+      EARTH_POSTGRES_USER: ${EARTH_POSTGRES_USER}
+      EARTH_POSTGRES_PASSWORD: ${EARTH_POSTGRES_PASSWORD}
+      EARTH_POSTGRES_DB: ${EARTH_POSTGRES_DB}
+      EARTH_POSTGRES_HOST: ${EARTH_POSTGRES_HOST}
+      EARTH_POSTGRES_URL: postgres://${EARTH_POSTGRES_USER}:${EARTH_POSTGRES_PASSWORD}@${EARTH_POSTGRES_HOST}/${EARTH_POSTGRES_DB}
+      EARTH_MINIO_ROOT_USER: ${EARTH_MINIO_ROOT_USER}
+      EARTH_MINIO_ROOT_PASSWORD: ${EARTH_MINIO_ROOT_PASSWORD}
+      EARTH_MINIO_BUCKET: ${EARTH_MINIO_BUCKET}
+      EARTH_MINIO_HOST: ${EARTH_MINIO_HOST}
+      EARTH_MINIO_PORT: ${EARTH_MINIO_PORT}
+      EARTH_SERVICE_HOST: ${EARTH_SERVICE_HOST}
+      EARTH_SERVICE_PORT: ${EARTH_SERVICE_PORT}
+  atomearth:
+    build:
+      context: ./AtomHackFrontendEarth
+      args:
+        - VITE_EARTH_API=${EARTH_SERVICE_URL}
+        - VITE_EARTH_MINIO=${EARTH_MINIO_URL}
+    environment:
+      - VITE_EARTH_API=${EARTH_SERVICE_URL}
+      - VITE_EARTH_MINIO=${EARTH_MINIO_URL}
+    ports:
+      - "30001:80"
+    depends_on:
+      - earthback
+      - earthminio
+# run with
+# docker compose -f .\compose.dev.yml up -d --build
+# podman compose -f .\compose.dev.yml up -d --build
