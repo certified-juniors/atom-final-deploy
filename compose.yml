@@ -311,6 +311,7 @@ services:
       - auth-redis
   auth-postgres:
     image: postgres:16-alpine
+    restart: always
     environment:
       - POSTGRES_USER=${AUTH_POSTGRES_USER}
       - POSTGRES_PASSWORD=${AUTH_POSTGRES_PASSWORD}
