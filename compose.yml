@@ -312,9 +312,9 @@ services:
   auth-postgres:
     image: postgres:16-alpine
     environment:
-      - POSTGRES_USER=${DUSTWIND_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${DUSTWIND_POSTGRES_PASSWORD}
-      - POSTGRES_DB=${DUSTWIND_POSTGRES_DB}
+      - POSTGRES_USER=${AUTH_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${AUTH_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${AUTH_POSTGRES_DB}
     volumes:
       - auth-db:/var/lib/postgresql/data
   auth-redis:
