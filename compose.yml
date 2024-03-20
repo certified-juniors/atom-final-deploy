@@ -294,8 +294,10 @@ services:
   auth-app:
     build:
       context: ./AtomHackFinalAuthService
+    ports:
+      - "${AUTH_SERVER_PORT}:${AUTH_SERVER_PORT}"
     environment:
-      - SERVER_PORT=${AUTH_SERVER_PORT}
+      - HTTP_SERVER_PORT=${AUTH_SERVER_PORT}
       - LOG_LEVEL=${LOG_LEVEL}
       - FRONTEND_SERVER_ADDR=${FRONTEND_SERVER_ADDR}
       - REDIS_PASSWORD=${AUTH_REDIS_PASSWORD}
