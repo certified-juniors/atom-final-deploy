@@ -1,44 +1,235 @@
-version: "3"
+version: "3.8"
 
+# Нова-Терра разделена на 5 колоний:
+# • Акварион aquarion AQUARION
+# • Зеленый Лабиринт greenlab GREENLAB
+# • Терраморф terramorf TERRAMORF
+# • Кристаллия crystalia CRYSTALIA
+# • Пустынный Вихрь dustwind DUSTWIND
 volumes:
-  db-data:
+  backend-db:
+  backend-redis:
+
+  aquarion-db:
+  greenlab-db:
+  terramorf-db:
+  crystalia-db:
+  dustwind-db:
+
+  aquarion-minio:
+  greenlab-minio:
+  terramorf-minio:
+  crystalia-minio:
+  dustwind-minio:
 
 services:
+  ###### COLONIAs ######
+  ### KAFKAs ###
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-  kafka:
-    image: confluentinc/cp-kafka:latest
-    depends_on:
-      - zookeeper
+    image: wurstmeister/zookeeper
     ports:
-      - 29092:29092
-      - 29093:29093
-    restart: always
+      - "2181:2181"
+  kafka-aquarion:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
     environment:
-      KAFKA_BROKER_ID: 1
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-aquarion:9093,OUTSIDE://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${BOOTSTRAP_SERVER},PLAINTEXT_HOST://${KAFKA_CONSUMER}
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT_HOST:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-  db:
-    image: postgres:16-alpine
+  kafka-greenlab:
+    image: wurstmeister/kafka
+    ports:
+      - "9093:9092"
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-greenlab:9093,OUTSIDE://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  kafka-terramorf:
+    image: wurstmeister/kafka
+    ports:
+      - "9094:9092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-terramorf:9093,OUTSIDE://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  kafka-crystalia:
+    image: wurstmeister/kafka
+    ports:
+      - "9095:9092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-crystalia:9093,OUTSIDE://localhost:9095
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  kafka-dustwind:
+    image: wurstmeister/kafka
+    ports:
+      - "9096:9092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-dustwind:9093,OUTSIDE://localhost:9096
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  ### POSTGRESes ###
+  postgres-aquarion:
+    image: postgres:16-alpine
+    ports: 
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${AQUARION_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${AQUARION_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${AQUARION_POSTGRES_DB}
     volumes:
-      - db-data:/var/lib/postgresql/data
-  adminer:
-    image: adminer:latest
+      - aquarion-db:/var/lib/postgresql/data
+  postgres-greenlab:
+    image: postgres:16-alpine
+    ports: 
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=${GREENLAB_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${GREENLAB_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${GREENLAB_POSTGRES_DB}
+    volumes:
+      - greenlab-db:/var/lib/postgresql/data
+  postgres-terramorf:
+    image: postgres:16-alpine
+    ports: 
+      - "5434:5432"
+    environment:
+      - POSTGRES_USER=${TERRAMORF_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${TERRAMORF_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${TERRAMORF_POSTGRES_DB}
+    volumes:
+      - terramorf-db:/var/lib/postgresql/data
+  postgres-crystalia:
+    image: postgres:16-alpine
+    ports: 
+      - "5435:5432"
+    environment:
+      - POSTGRES_USER=${CRYSTALIA_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${CRYSTALIA_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${CRYSTALIA_POSTGRES_DB}
+    volumes:
+      - crystalia-db:/var/lib/postgresql/data
+  postgres-dustwind:
+    image: postgres:16-alpine
+    ports: 
+      - "5436:5432"
+    environment:
+      - POSTGRES_USER=${DUSTWIND_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${DUSTWIND_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${DUSTWIND_POSTGRES_DB}
+    volumes:
+      - dustwind-db:/var/lib/postgresql/data
+  ### MINIOs ###
+  minio-aquarion:
+    image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
     ports:
-      - "33333:8080"
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - aquarion-minio:/data
+    environment:
+      - MINIO_ROOT_USER=${AQUARION_MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${AQUARION_MINIO_ROOT_PASSWORD}
+    command: server --console-address ":9001" /data
+  minio-greenlab:
+    image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
+    ports:
+      - "9002:9000"
+      - "9003:9001"
+    volumes:
+      - greenlab-minio:/data
+    environment:
+      - MINIO_ROOT_USER=${GREENLAB_MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${GREENLAB_MINIO_ROOT_PASSWORD}
+    command: server --console-address ":9001" /data
+  minio-terramorf:
+    image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
+    ports:
+      - "9004:9000"
+      - "9005:9001"
+    volumes:
+      - terramorf-minio:/data
+    environment:
+      - MINIO_ROOT_USER=${TERRAMORF_MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${TERRAMORF_MINIO_ROOT_PASSWORD}
+    command: server --console-address ":9001" /data
+  minio-crystalia:
+    image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
+    ports:
+      - "9006:9000"
+      - "9007:9001"
+    volumes:
+      - crystalia-minio:/data
+    environment:
+      - MINIO_ROOT_USER=${CRYSTALIA_MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${CRYSTALIA_MINIO_ROOT_PASSWORD}
+    command: server --console-address ":9001" /data
+  minio-dustwind:
+    image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
+    ports:
+      - "9008:9000"
+      - "9009:9001"
+    volumes:
+      - dustwind-minio:/data
+    environment:
+      - MINIO_ROOT_USER=${DUSTWIND_MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${DUSTWIND_MINIO_ROOT_PASSWORD}
+    command: server --console-address ":9001" /data
+  createbuckets:
+    image: quay.io/minio/mc:RELEASE.2023-12-20T07-14-22Z-cpuv1
+    environment:
+      - AQUARION_MINIO_ROOT_USER=${AQUARION_MINIO_ROOT_USER}
+      - AQUARION_MINIO_ROOT_PASSWORD=${AQUARION_MINIO_ROOT_PASSWORD}
+      - AQUARION_MINIO_BUCKET=${AQUARION_MINIO_BUCKET}
+
+      - GREENLAB_MINIO_ROOT_USER=${GREENLAB_MINIO_ROOT_USER}
+      - GREENLAB_MINIO_ROOT_PASSWORD=${GREENLAB_MINIO_ROOT_PASSWORD}
+      - GREENLAB_MINIO_BUCKET=${GREENLAB_MINIO_BUCKET}
+
+      - TERRAMORF_MINIO_ROOT_USER=${TERRAMORF_MINIO_ROOT_USER}
+      - TERRAMORF_MINIO_ROOT_PASSWORD=${TERRAMORF_MINIO_ROOT_PASSWORD}
+      - TERRAMORF_MINIO_BUCKET=${TERRAMORF_MINIO_BUCKET}
+
+      - CRYSTALIA_MINIO_ROOT_USER=${CRYSTALIA_MINIO_ROOT_USER}
+      - CRYSTALIA_MINIO_ROOT_PASSWORD=${CRYSTALIA_MINIO_ROOT_PASSWORD}
+      - CRYSTALIA_MINIO_BUCKET=${CRYSTALIA_MINIO_BUCKET}
+
+      - DUSTWIND_MINIO_ROOT_USER=${DUSTWIND_MINIO_ROOT_USER}
+      - DUSTWIND_MINIO_ROOT_PASSWORD=${DUSTWIND_MINIO_ROOT_PASSWORD}
+      - DUSTWIND_MINIO_BUCKET=${DUSTWIND_MINIO_BUCKET}
     depends_on:
-      - db
-  botaihack:
-    image: botaihack:latest
-    ports:
-      - "40001:8080"
+      - minio-aquarion
+      - minio-greenlab
+      - minio-terramorf
+      - minio-crystalia
+      - minio-dustwind
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set aqminio http://minio-aquarion:9000  $AQUARION_MINIO_ROOT_USER  $AQUARION_MINIO_ROOT_PASSWORD;
+      /usr/bin/mc alias set glminio http://minio-greenlab:9000  $GREENLAB_MINIO_ROOT_USER  $GREENLAB_MINIO_ROOT_PASSWORD;
+      /usr/bin/mc alias set tmminio http://minio-terramorf:9000 $TERRAMORF_MINIO_ROOT_USER $TERRAMORF_MINIO_ROOT_PASSWORD;
+      /usr/bin/mc alias set crminio http://minio-crystalia:9000 $CRYSTALIA_MINIO_ROOT_USER $CRYSTALIA_MINIO_ROOT_PASSWORD;
+      /usr/bin/mc alias set dwminio http://minio-dustwind:9000  $DUSTWIND_MINIO_ROOT_USER  $DUSTWIND_MINIO_ROOT_PASSWORD;
+      /usr/bin/mc mb aqminio/$AQUARION_MINIO_BUCKET;
+      /usr/bin/mc mb glminio/$GREENLAB_MINIO_BUCKET;
+      /usr/bin/mc mb tmminio/$TERRAMORF_MINIO_BUCKET;
+      /usr/bin/mc mb crminio/$CRYSTALIA_MINIO_BUCKET;
+      /usr/bin/mc mb dwminio/$DUSTWIND_MINIO_BUCKET;
+      /usr/bin/mc anonymous set public aqminio/$AQUARION_MINIO_BUCKET;
+      /usr/bin/mc anonymous set public glminio/$GREENLAB_MINIO_BUCKET;
+      /usr/bin/mc anonymous set public tmminio/$TERRAMORF_MINIO_BUCKET;
+      /usr/bin/mc anonymous set public crminio/$CRYSTALIA_MINIO_BUCKET;
+      /usr/bin/mc anonymous set public dwminio/$DUSTWIND_MINIO_BUCKET;
+      exit 0;
+      "
