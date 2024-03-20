@@ -25,60 +25,66 @@ volumes:
 services:
   ###### COLONIAs ######
   ### KAFKAs ###
-  zookeeper:
+  zookeeper-aquarion:
     image: wurstmeister/zookeeper
-    ports:
-      - "2181:2181"
+  zookeeper-greenlab:
+    image: wurstmeister/zookeeper
+  zookeeper-terramorf:
+    image: wurstmeister/zookeeper
+  zookeeper-crystalia:
+    image: wurstmeister/zookeeper
+  zookeeper-dustwind:
+    image: wurstmeister/zookeeper
   kafka-aquarion:
     image: wurstmeister/kafka
     ports:
       - "9092:9092"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-aquarion:9093,OUTSIDE://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-aquarion:9093,OUTSIDE://${HOST_IP}:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-aquarion:2181
   kafka-greenlab:
     image: wurstmeister/kafka
     ports:
-      - "9093:9092"
+      - "9093:9093"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-greenlab:9093,OUTSIDE://localhost:9093
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-greenlab:9093,OUTSIDE://${HOST_IP}:9097
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9097
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-greenlab:2181
   kafka-terramorf:
     image: wurstmeister/kafka
     ports:
-      - "9094:9092"
+      - "9094:9094"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-terramorf:9093,OUTSIDE://localhost:9094
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-terramorf:9093,OUTSIDE://${HOST_IP}:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-terramorf:2181
   kafka-crystalia:
     image: wurstmeister/kafka
     ports:
-      - "9095:9092"
+      - "9095:9095"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-crystalia:9093,OUTSIDE://localhost:9095
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-crystalia:9093,OUTSIDE://${HOST_IP}:9095
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9095
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-crystalia:2181
   kafka-dustwind:
     image: wurstmeister/kafka
     ports:
-      - "9096:9092"
+      - "9096:9096"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-dustwind:9093,OUTSIDE://localhost:9096
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-dustwind:9093,OUTSIDE://${HOST_IP}:9096
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9096
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-dustwind:2181
   ### POSTGRESes ###
   postgres-aquarion:
     image: postgres:16-alpine
@@ -254,7 +260,4 @@ services:
     image: botaihack
     ports:
       - "8080:8080"
-
-
-
   
