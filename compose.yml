@@ -290,4 +290,30 @@ services:
     image: botaihack
     ports:
       - "8080:8080"
-  
+  ### AUTH ###
+  auth-app:
+    build:
+      context: ./AtomHackFinalAuthService
+    environment:
+      - SERVER_PORT=3000
+      - LOG_LEVEL=info/debug/error/fatal
+      - FRONTEND_SERVER_ADDR=
+      - REDIS_PASSWORD=
+      - REDIS_HOST=
+      - REDIS_PORT=
+      - POSTGRES_PASSWORD=
+      - POSTGRES_USER=
+      - POSTGRES_DB=
+      - POSTGRES_HOST=
+      - POSTGRES_PORT=
+  auth-postgres:
+    postgres-dustwind:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=${DUSTWIND_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${DUSTWIND_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${DUSTWIND_POSTGRES_DB}
+    volumes:
+      - dustwind-db:/var/lib/postgresql/data
+
+      
