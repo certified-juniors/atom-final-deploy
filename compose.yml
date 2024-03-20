@@ -233,3 +233,28 @@ services:
       /usr/bin/mc anonymous set public dwminio/$DUSTWIND_MINIO_BUCKET;
       exit 0;
       "
+  ### MLs ###
+  ml-aquarion:
+    image: botaihack
+    ports:
+      - "8040:8080"
+  ml-greenlab:
+    image: botaihack
+    ports:
+      - "8050:8080"
+  ml-terramorf:
+    image: botaihack
+    ports:
+      - "8060:8080"
+  ml-crystalia:
+    image: botaihack
+    ports:
+      - "8070:8080"
+  ml-dustwind:
+    image: botaihack
+    ports:
+      - "8080:8080"
+
+
+
+  
