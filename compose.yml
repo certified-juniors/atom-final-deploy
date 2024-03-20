@@ -269,24 +269,79 @@ services:
       /usr/bin/mc anonymous set public dwminio/$DUSTWIND_MINIO_BUCKET;
       exit 0;
       "
+  ### EMAIL SERVICES ###
+  email-aquarion:
+    build:
+      context: ./AtomHackFinalEmailService
+    ports:
+      - "5011:5011"
+    environment:
+      - EMAIL_SERVICE_HOST=email-aquarion
+      - EMAIL_SERVICE_PORT=5011
+      - MAIL_SERVICE_SMTP_HOST=${SMTP_HOST}
+      - EMAIL_SERVICE_SMTP_PORT=${SMTP_PORT}
+      - EMAIL_SERVICE_SMTP_NOREPLY_USERNAME=${SMTP_NOREPLY_USERNAME}
+      - EMAIL_SERVICE_SMTP_SUPPORT_USERNAME=${SMTP_SUPPORT_USERNAME}
+      - EMAIL_SERVICE_SMTP_NOREPLY_PASSWORD=${SMTP_NOREPLY_PASSWORD}
+      - EMAIL_SERVICE_SMTP_SUPPORT_PASSWORD=${SMTP_SUPPORT_PASSWORD}
+  email-greenlab:
+    build:
+      context: ./AtomHackFinalEmailService
+    ports:
+      - "5012:5012"
+    environment:
+      - EMAIL_SERVICE_HOST=email-aquarion
+      - EMAIL_SERVICE_PORT=5012
+      - MAIL_SERVICE_SMTP_HOST=${SMTP_HOST}
+      - EMAIL_SERVICE_SMTP_PORT=${SMTP_PORT}
+      - EMAIL_SERVICE_SMTP_NOREPLY_USERNAME=${SMTP_NOREPLY_USERNAME}
+      - EMAIL_SERVICE_SMTP_SUPPORT_USERNAME=${SMTP_SUPPORT_USERNAME}
+      - EMAIL_SERVICE_SMTP_NOREPLY_PASSWORD=${SMTP_NOREPLY_PASSWORD}
+      - EMAIL_SERVICE_SMTP_SUPPORT_PASSWORD=${SMTP_SUPPORT_PASSWORD}
+  email-terramorf:
+    build:
+      context: ./AtomHackFinalEmailService
+    ports:
+      - "5013:5013"
+    environment:
+      - EMAIL_SERVICE_HOST=email-terramorf
+      - EMAIL_SERVICE_PORT=5013
+      - MAIL_SERVICE_SMTP_HOST=${SMTP_HOST}
+      - EMAIL_SERVICE_SMTP_PORT=${SMTP_PORT}
+      - EMAIL_SERVICE_SMTP_NOREPLY_USERNAME=${SMTP_NOREPLY_USERNAME}
+      - EMAIL_SERVICE_SMTP_SUPPORT_USERNAME=${SMTP_SUPPORT_USERNAME}
+      - EMAIL_SERVICE_SMTP_NOREPLY_PASSWORD=${SMTP_NOREPLY_PASSWORD}
+      - EMAIL_SERVICE_SMTP_SUPPORT_PASSWORD=${SMTP_SUPPORT_PASSWORD}
+  email-crystalia:
+    build:
+      context: ./AtomHackFinalEmailService
+    ports:
+      - "5014:5014"
+    environment:
+      - EMAIL_SERVICE_HOST=email-crystalia
+      - EMAIL_SERVICE_PORT=5014
+      - MAIL_SERVICE_SMTP_HOST=${SMTP_HOST}
+      - EMAIL_SERVICE_SMTP_PORT=${SMTP_PORT}
+      - EMAIL_SERVICE_SMTP_NOREPLY_USERNAME=${SMTP_NOREPLY_USERNAME}
+      - EMAIL_SERVICE_SMTP_SUPPORT_USERNAME=${SMTP_SUPPORT_USERNAME}
+      - EMAIL_SERVICE_SMTP_NOREPLY_PASSWORD=${SMTP_NOREPLY_PASSWORD}
+      - EMAIL_SERVICE_SMTP_SUPPORT_PASSWORD=${SMTP_SUPPORT_PASSWORD}
+  email-dustwind:
+    build:
+      context: ./AtomHackFinalEmailService
+    ports:
+      - "5015:5015"
+    environment:
+      - EMAIL_SERVICE_HOST=email-dustwind
+      - EMAIL_SERVICE_PORT=5015
+      - MAIL_SERVICE_SMTP_HOST=${SMTP_HOST}
+      - EMAIL_SERVICE_SMTP_PORT=${SMTP_PORT}
+      - EMAIL_SERVICE_SMTP_NOREPLY_USERNAME=${SMTP_NOREPLY_USERNAME}
+      - EMAIL_SERVICE_SMTP_SUPPORT_USERNAME=${SMTP_SUPPORT_USERNAME}
+      - EMAIL_SERVICE_SMTP_NOREPLY_PASSWORD=${SMTP_NOREPLY_PASSWORD}
+      - EMAIL_SERVICE_SMTP_SUPPORT_PASSWORD=${SMTP_SUPPORT_PASSWORD}
   ### MLs ###
-  ml-aquarion:
-    image: botaihack
-    ports:
-      - "8040:8080"
-  ml-greenlab:
-    image: botaihack
-    ports:
-      - "8050:8080"
-  ml-terramorf:
-    image: botaihack
-    ports:
-      - "8060:8080"
-  ml-crystalia:
-    image: botaihack
-    ports:
-      - "8070:8080"
-  ml-dustwind:
+  ml:
     image: botaihack
     ports:
       - "8080:8080"
@@ -335,4 +390,3 @@ services:
     ports:
       - "3000:5173"
   
-      
