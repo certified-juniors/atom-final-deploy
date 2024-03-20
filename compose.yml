@@ -1,5 +1,3 @@
-version: "3.8"
-
 # Нова-Терра разделена на 5 колоний:
 # • Акварион aquarion AQUARION
 # • Зеленый Лабиринт greenlab GREENLAB
@@ -22,6 +20,8 @@ volumes:
   crystalia-minio:
   dustwind-minio:
 
+  auth-db:
+  auth-redis:
 services:
   ###### COLONIAs ######
   ### KAFKAs ###
@@ -295,25 +295,34 @@ services:
     build:
       context: ./AtomHackFinalAuthService
     environment:
-      - SERVER_PORT=3000
-      - LOG_LEVEL=info/debug/error/fatal
-      - FRONTEND_SERVER_ADDR=
-      - REDIS_PASSWORD=
-      - REDIS_HOST=
-      - REDIS_PORT=
-      - POSTGRES_PASSWORD=
-      - POSTGRES_USER=
-      - POSTGRES_DB=
-      - POSTGRES_HOST=
-      - POSTGRES_PORT=
+      - SERVER_PORT=${AUTH_SERVER_PORT}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - FRONTEND_SERVER_ADDR=${FRONTEND_SERVER_ADDR}
+      - REDIS_PASSWORD=${AUTH_REDIS_PASSWORD}
+      - REDIS_HOST=${AUTH_REDIS_HOST}
+      - REDIS_PORT=${AUTH_REDIS_PORT}
+      - POSTGRES_PASSWORD=${AUTH_POSTGRES_PASSWORD}
+      - POSTGRES_USER=${AUTH_POSTGRES_USER}
+      - POSTGRES_DB=${AUTH_POSTGRES_DB}
+      - POSTGRES_HOST=${AUTH_POSTGRES_HOST}
+      - POSTGRES_PORT=${AUTH_POSTGRES_PORT}
+    depends_on:
+      - auth-postgres
+      - auth-redis
   auth-postgres:
-    postgres-dustwind:
     image: postgres:16-alpine
     environment:
       - POSTGRES_USER=${DUSTWIND_POSTGRES_USER}
       - POSTGRES_PASSWORD=${DUSTWIND_POSTGRES_PASSWORD}
       - POSTGRES_DB=${DUSTWIND_POSTGRES_DB}
     volumes:
-      - dustwind-db:/var/lib/postgresql/data
+      - auth-db:/var/lib/postgresql/data
+  auth-redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - auth-redis:/data
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${AUTH_REDIS_PASSWORD}
 
       
