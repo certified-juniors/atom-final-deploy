@@ -7,3 +7,6 @@
 [submodule "AquarionBackend"]
 	path = AquarionBackend
 	url = https://github.com/Sh1bari/AquarionBackend.git
+[submodule "AtomHackFinalEmailService"]
+	path = AtomHackFinalEmailService
+	url = https://github.com/certified-juniors/AtomHackFinalEmailService
