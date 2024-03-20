@@ -327,5 +327,11 @@ services:
     volumes:
       - auth-redis:/data
     command: redis-server --save 20 1 --loglevel warning --requirepass ${AUTH_REDIS_PASSWORD}
+  ### MAIN FRONTEND ###
+  main-app:
+    build:
+      context: ./AtomHack-Final-frontend
+    ports:
+      - "3000:5173"
 
       
