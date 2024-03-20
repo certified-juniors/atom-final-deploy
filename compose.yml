@@ -290,7 +290,7 @@ services:
     ports:
       - "5012:5012"
     environment:
-      - EMAIL_SERVICE_HOST=email-aquarion
+      - EMAIL_SERVICE_HOST=email-greenlab
       - EMAIL_SERVICE_PORT=5012
       - MAIL_SERVICE_SMTP_HOST=${SMTP_HOST}
       - EMAIL_SERVICE_SMTP_PORT=${SMTP_PORT}
