@@ -501,6 +501,7 @@ services:
       KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
     ports:
       - "8005:8005"
+
   ### MLs ###
   ml:
     image: botaihack
