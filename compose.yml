@@ -27,31 +27,37 @@ services:
   ### KAFKAs ###
   zookeeper-aquarion:
     image: confluentinc/cp-zookeeper:latest
+    restart: always
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
   zookeeper-greenlab:
     image: confluentinc/cp-zookeeper:latest
+    restart: always
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
   zookeeper-terramorf:
     image: confluentinc/cp-zookeeper:latest
+    restart: always
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
   zookeeper-crystalia:
     image: confluentinc/cp-zookeeper:latest
+    restart: always
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
   zookeeper-dustwind:
     image: confluentinc/cp-zookeeper:latest
+    restart: always
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
   kafka-aquarion:
     image: confluentinc/cp-kafka:latest
+    restart: always
     ports:
       - "9092:9092"
     hostname: kafka-aquarion
@@ -65,6 +71,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-aquarion:2181
   kafka-greenlab:
     image: confluentinc/cp-kafka:latest
+    restart: always
     hostname: kafka-greenlab
     ports:
       - "9093:9093"
@@ -78,6 +85,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-greenlab:2181
   kafka-terramorf:
     image: confluentinc/cp-kafka:latest
+    restart: always
     hostname: kafka-terramorf
     ports:
       - "9094:9094"
@@ -91,6 +99,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-terramorf:2181
   kafka-crystalia:
     image: confluentinc/cp-kafka:latest
+    restart: always
     hostname: kafka-crystalia
     ports:
       - "9095:9095"
@@ -104,6 +113,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-crystalia:2181
   kafka-dustwind:
     image: confluentinc/cp-kafka:latest
+    restart: always
     hostname: kafka-dustwind
     ports:
       - "9096:9096"
@@ -118,6 +128,7 @@ services:
   ### POSTGRESes ###
   postgres-aquarion:
     image: postgres:16-alpine
+    restart: always
     ports: 
       - "5432:5432"
     environment:
@@ -128,6 +139,7 @@ services:
       - aquarion-db:/var/lib/postgresql/data
   postgres-greenlab:
     image: postgres:16-alpine
+    restart: always
     ports: 
       - "5433:5432"
     environment:
@@ -138,6 +150,7 @@ services:
       - greenlab-db:/var/lib/postgresql/data
   postgres-terramorf:
     image: postgres:16-alpine
+    restart: always
     ports: 
       - "5434:5432"
     environment:
@@ -148,6 +161,7 @@ services:
       - terramorf-db:/var/lib/postgresql/data
   postgres-crystalia:
     image: postgres:16-alpine
+    restart: always
     ports: 
       - "5435:5432"
     environment:
@@ -158,6 +172,7 @@ services:
       - crystalia-db:/var/lib/postgresql/data
   postgres-dustwind:
     image: postgres:16-alpine
+    restart: always
     ports: 
       - "5436:5432"
     environment:
@@ -168,6 +183,7 @@ services:
       - dustwind-db:/var/lib/postgresql/data
   adminer:
     image: adminer:latest
+    restart: always
     ports:
       - "33333:8080"
     depends_on:
@@ -180,6 +196,7 @@ services:
   ### MINIOs ###
   minio-aquarion:
     image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
+    restart: always
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -191,6 +208,7 @@ services:
     command: server --console-address ":9001" /data
   minio-greenlab:
     image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
+    restart: always
     ports:
       - "9002:9000"
       - "9003:9001"
@@ -202,6 +220,7 @@ services:
     command: server --console-address ":9001" /data
   minio-terramorf:
     image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
+    restart: always
     ports:
       - "9004:9000"
       - "9005:9001"
@@ -213,6 +232,7 @@ services:
     command: server --console-address ":9001" /data
   minio-crystalia:
     image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
+    restart: always
     ports:
       - "9006:9000"
       - "9007:9001"
@@ -224,6 +244,7 @@ services:
     command: server --console-address ":9001" /data
   minio-dustwind:
     image: quay.io/minio/minio:RELEASE.2023-12-20T01-00-02Z-cpuv1
+    restart: always
     ports:
       - "9008:9000"
       - "9009:9001"
@@ -235,6 +256,7 @@ services:
     command: server --console-address ":9001" /data
   createbuckets:
     image: quay.io/minio/mc:RELEASE.2023-12-20T07-14-22Z-cpuv1
+    restart: always
     environment:
       - AQUARION_MINIO_ROOT_USER=${AQUARION_MINIO_ROOT_USER}
       - AQUARION_MINIO_ROOT_PASSWORD=${AQUARION_MINIO_ROOT_PASSWORD}
@@ -284,6 +306,7 @@ services:
   email-aquarion:
     build:
       context: ./AtomHackFinalEmailService
+    restart: always
     ports:
       - "5011:5011"
     environment:
@@ -296,6 +319,7 @@ services:
       - EMAIL_SERVICE_SMTP_NOREPLY_PASSWORD=${SMTP_NOREPLY_PASSWORD}
       - EMAIL_SERVICE_SMTP_SUPPORT_PASSWORD=${SMTP_SUPPORT_PASSWORD}
   email-greenlab:
+    restart: always
     build:
       context: ./AtomHackFinalEmailService
     ports:
@@ -312,6 +336,7 @@ services:
   email-terramorf:
     build:
       context: ./AtomHackFinalEmailService
+    restart: always
     ports:
       - "5013:5013"
     environment:
@@ -326,6 +351,7 @@ services:
   email-crystalia:
     build:
       context: ./AtomHackFinalEmailService
+    restart: always
     ports:
       - "5014:5014"
     environment:
@@ -340,6 +366,7 @@ services:
   email-dustwind:
     build:
       context: ./AtomHackFinalEmailService
+    restart: always
     ports:
       - "5015:5015"
     environment:
@@ -353,6 +380,7 @@ services:
       - EMAIL_SERVICE_SMTP_SUPPORT_PASSWORD=${SMTP_SUPPORT_PASSWORD}
   ### BACKENDS ###
   back-aquarion:
+    restart: always
     build: 
       context: ./AquarionBackend
       args:
@@ -395,6 +423,7 @@ services:
       - minio-aquarion
       - kafka-aquarion
   back-greenlab:
+    restart: always
     build: 
       context: ./AquarionBackend
       args:
@@ -437,6 +466,7 @@ services:
       - minio-greenlab
       - kafka-greenlab
   back-terramorf:
+    restart: always
     build: 
       context: ./AquarionBackend
       args:
@@ -479,6 +509,7 @@ services:
       - minio-terramorf
       - kafka-terramorf
   back-crystalia:
+    restart: always
     build: 
       context: ./AquarionBackend
       args:
@@ -521,6 +552,7 @@ services:
       - minio-crystalia
       - kafka-crystalia
   back-dustwind:
+    restart: always
     build: 
       context: ./AquarionBackend
       args:
@@ -564,6 +596,7 @@ services:
       - kafka-dustwind
   ### SENDER SERVICE ###
   sender-aquarion:
+    restart: always
     build:
       context: ./AtomHack-Final-senderServer
     environment:
@@ -576,6 +609,7 @@ services:
       - ml
       - kafka-aquarion
   sender-greenlab:
+    restart: always
     build:
       context: ./AtomHack-Final-senderServer
     environment:
@@ -588,6 +622,7 @@ services:
       - ml
       - kafka-greenlab
   sender-terramorf:
+    restart: always
     build:
       context: ./AtomHack-Final-senderServer
     environment:
@@ -600,6 +635,7 @@ services:
       - ml
       - kafka-terramorf
   sender-crystalia:
+    restart: always
     build:
       context: ./AtomHack-Final-senderServer
     environment:
@@ -612,6 +648,7 @@ services:
       - ml
       - kafka-crystalia
   sender-dustwind:
+    restart: always
     build:
       context: ./AtomHack-Final-senderServer
     environment:
@@ -625,11 +662,13 @@ services:
       - kafka-dustwind
   ### MLs ###
   ml:
+    restart: always
     image: botaihack
     ports:
       - "8080:8080"
   ### AUTH ###
   auth-app:
+    restart: always
     build:
       context: ./AtomHackFinalAuthService
     ports:
@@ -665,6 +704,7 @@ services:
       - auth-db:/var/lib/postgresql/data
   auth-redis:
     image: redis:alpine
+    restart: always
     ports:
       - "6379:6379"
     volumes:
@@ -672,6 +712,7 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass ${AUTH_REDIS_PASSWORD}
   ### MAIN FRONTEND ###
   main-app:
+    restart: always
     build:
       context: ./AtomHack-Final-frontend
     ports:
