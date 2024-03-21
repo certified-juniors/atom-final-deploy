@@ -129,8 +129,6 @@ services:
   postgres-aquarion:
     image: postgres:16-alpine
     restart: always
-    ports: 
-      - "5432:5432"
     environment:
       - POSTGRES_USER=${AQUARION_POSTGRES_USER}
       - POSTGRES_PASSWORD=${AQUARION_POSTGRES_PASSWORD}
@@ -140,8 +138,6 @@ services:
   postgres-greenlab:
     image: postgres:16-alpine
     restart: always
-    ports: 
-      - "5433:5432"
     environment:
       - POSTGRES_USER=${GREENLAB_POSTGRES_USER}
       - POSTGRES_PASSWORD=${GREENLAB_POSTGRES_PASSWORD}
@@ -151,8 +147,6 @@ services:
   postgres-terramorf:
     image: postgres:16-alpine
     restart: always
-    ports: 
-      - "5434:5432"
     environment:
       - POSTGRES_USER=${TERRAMORF_POSTGRES_USER}
       - POSTGRES_PASSWORD=${TERRAMORF_POSTGRES_PASSWORD}
@@ -162,8 +156,6 @@ services:
   postgres-crystalia:
     image: postgres:16-alpine
     restart: always
-    ports: 
-      - "5435:5432"
     environment:
       - POSTGRES_USER=${CRYSTALIA_POSTGRES_USER}
       - POSTGRES_PASSWORD=${CRYSTALIA_POSTGRES_PASSWORD}
@@ -173,8 +165,6 @@ services:
   postgres-dustwind:
     image: postgres:16-alpine
     restart: always
-    ports: 
-      - "5436:5432"
     environment:
       - POSTGRES_USER=${DUSTWIND_POSTGRES_USER}
       - POSTGRES_PASSWORD=${DUSTWIND_POSTGRES_PASSWORD}
