@@ -389,6 +389,11 @@ services:
       KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
       KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
       KAFKA_SERVER: "${HOST_IP}:9092"
+    depends_on:
+      - postgres-aquarion
+      - email-aquarion
+      - minio-aquarion
+      - kafka-aquarion
   back-greenlab:
     build: 
       context: ./AquarionBackend
@@ -426,6 +431,11 @@ services:
       KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
       KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
       KAFKA_SERVER: "${HOST_IP}:9093"
+    depends_on:
+      - postgres-greenlab
+      - email-greenlab
+      - minio-greenlab
+      - kafka-greenlab
   back-terramorf:
     build: 
       context: ./AquarionBackend
@@ -463,6 +473,11 @@ services:
       KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
       KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
       KAFKA_SERVER: "${HOST_IP}:9094"
+    depends_on:
+      - postgres-terramorf
+      - email-terramorf
+      - minio-terramorf
+      - kafka-terramorf
   back-crystalia:
     build: 
       context: ./AquarionBackend
@@ -500,6 +515,11 @@ services:
       KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
       KAFKA_READ_FROM_TOPIC: ${TOPIC_2} 
       KAFKA_SERVER: "${HOST_IP}:9095"
+    depends_on:
+      - postgres-crystalia
+      - email-crystalia
+      - minio-crystalia
+      - kafka-crystalia
   back-dustwind:
     build: 
       context: ./AquarionBackend
@@ -537,6 +557,11 @@ services:
       KAFKA_SERVER: "${HOST_IP}:9096"
     ports:
       - "8005:8005"
+    depends_on:
+      - postgres-dustwind
+      - email-dustwind
+      - minio-dustwind
+      - kafka-dustwind
   ### SENDER SERVICE ###
   sender-aquarion:
     build:
