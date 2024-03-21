@@ -546,6 +546,7 @@ services:
       AI_KAFKA_CONSUMER_TOPIC: "${TOPIC_1}"
       AI_KAFKA_PRODUCER_TOPIC: "${TOPIC_2}"
       AI_BASE_URL: "http://ml:8080"
+      BACKEND_BASE_URL: "http://back-aquarion:8001"
     depends_on:
       - ml
       - kafka-aquarion
@@ -557,6 +558,7 @@ services:
       AI_KAFKA_CONSUMER_TOPIC: "${TOPIC_1}"
       AI_KAFKA_PRODUCER_TOPIC: "${TOPIC_2}"
       AI_BASE_URL: "http://ml:8080"
+      BACKEND_BASE_URL: "http://back-aquarion:8002"
     depends_on:
       - ml
       - kafka-greenlab
@@ -568,6 +570,7 @@ services:
       AI_KAFKA_CONSUMER_TOPIC: "${TOPIC_1}"
       AI_KAFKA_PRODUCER_TOPIC: "${TOPIC_2}"
       AI_BASE_URL: "http://ml:8080"
+      BACKEND_BASE_URL: "http://back-aquarion:8003"
     depends_on:
       - ml
       - kafka-terramorf
@@ -579,6 +582,7 @@ services:
       AI_KAFKA_CONSUMER_TOPIC: "${TOPIC_1}"
       AI_KAFKA_PRODUCER_TOPIC: "${TOPIC_2}"
       AI_BASE_URL: "http://ml:8080"
+      BACKEND_BASE_URL: "http://back-aquarion:8004"
     depends_on:
       - ml
       - kafka-crystalia
@@ -590,6 +594,7 @@ services:
       AI_KAFKA_CONSUMER_TOPIC: "${TOPIC_1}"
       AI_KAFKA_PRODUCER_TOPIC: "${TOPIC_2}"
       AI_BASE_URL: "http://ml:8080"
+      BACKEND_BASE_URL: "http://back-aquarion:8005"
     depends_on:
       - ml
       - kafka-dustwind
