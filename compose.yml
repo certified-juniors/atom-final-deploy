@@ -359,6 +359,7 @@ services:
         SUPPORT_URL: http://email-aquarion:5011/api
         KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
         KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+        KAFKA_SERVER: "${HOST_IP}:9092"
     ports:
       - "8001:8001"
     environment:
@@ -376,6 +377,7 @@ services:
       SUPPORT_URL: http://email-aquarion:5011/api
       KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
       KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+      KAFKA_SERVER: "${HOST_IP}:9092"
   back-greenlab:
     build: 
       context: ./AquarionBackend
@@ -394,6 +396,7 @@ services:
         SUPPORT_URL: http://email-greenlab:5012/api
         KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
         KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+        KAFKA_SERVER: "${HOST_IP}:9093"
     ports:
       - "8002:8002"
     environment:
@@ -411,26 +414,44 @@ services:
       SUPPORT_URL: http://email-greenlab:5012/api
       KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
       KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
-  # back-terramorf:
-  #   build: 
-  #     context: ./AquarionBackend
-  #     args:
-  #       - PORT: 8003
-  #       - DATABASE_NAME: //postgres-terramorf:5432/${TERRAMORF_POSTGRES_DB}
-  #       - DATABASE_USER: ${TERRAMORF_POSTGRES_USER}
-  #       - DATABASE_PASSWORD: ${TERRAMORF_POSTGRES_PASSWORD}
-  #       - MINIO_ENDPOINT: ${TERRAMORF_MINIO_HOST}
-  #       - MINIO_ACCESS_KEY: ${TERRAMORF_MINIO_ROOT_USER}
-  #       - MINIO_SECRET_KEY: ${TERRAMORF_MINIO_ROOT_PASSWORD}
-  #       - MINIO_BUCKET: ${TERRAMORF_MINIO_BUCKET}
-  #       - INIT: true
-  #       - SERVER_NAME: terramorf
-  #       - SECRET: ${JWT_SECRET}
-  #       - SUPPORT_URL: http://email-terramorf:5013/api
-  #       - KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
-  #       - KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
-  #   ports:
-  #     - "8003:8003"
+      KAFKA_SERVER: "${HOST_IP}:9093"
+  back-terramorf:
+    build: 
+      context: ./AquarionBackend
+      args:
+        PORT: 8003
+        DATABASE_NAME: //postgres-terramorf:5432/${TERRAMORF_POSTGRES_DB}
+        DATABASE_USER: ${TERRAMORF_POSTGRES_USER}
+        DATABASE_PASSWORD: ${TERRAMORF_POSTGRES_PASSWORD}
+        MINIO_ENDPOINT: ${TERRAMORF_MINIO_HOST}
+        MINIO_ACCESS_KEY: ${TERRAMORF_MINIO_ROOT_USER}
+        MINIO_SECRET_KEY: ${TERRAMORF_MINIO_ROOT_PASSWORD}
+        MINIO_BUCKET: ${TERRAMORF_MINIO_BUCKET}
+        INIT: true
+        SERVER_NAME: terramorph
+        SECRET: ${JWT_SECRET}
+        SUPPORT_URL: http://email-terramorf:5013/api
+        KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
+        KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+        KAFKA_SERVER: "${HOST_IP}:9094"
+    ports:
+      - "8003:8003"
+    environment:
+      PORT: 8003
+      DATABASE_NAME: //postgres-terramorf:5432/${TERRAMORF_POSTGRES_DB}
+      DATABASE_USER: ${TERRAMORF_POSTGRES_USER}
+      DATABASE_PASSWORD: ${TERRAMORF_POSTGRES_PASSWORD}
+      MINIO_ENDPOINT: ${TERRAMORF_MINIO_HOST}
+      MINIO_ACCESS_KEY: ${TERRAMORF_MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${TERRAMORF_MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${TERRAMORF_MINIO_BUCKET}
+      INIT: true
+      SERVER_NAME: terramorph
+      SECRET: ${JWT_SECRET}
+      SUPPORT_URL: http://email-terramorf:5013/api
+      KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
+      KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+      KAFKA_SERVER: "${HOST_IP}:9094"
   back-crystalia:
     build: 
       context: ./AquarionBackend
@@ -449,6 +470,7 @@ services:
         SUPPORT_URL: http://email-crystalia:5014/api
         KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
         KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+        KAFKA_SERVER: "${HOST_IP}:9095"
     ports:
       - "8004:8004"
     environment:
@@ -466,6 +488,7 @@ services:
       SUPPORT_URL: http://email-crystalia:5014/api
       KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
       KAFKA_READ_FROM_TOPIC: ${TOPIC_2} 
+      KAFKA_SERVER: "${HOST_IP}:9095"
   back-dustwind:
     build: 
       context: ./AquarionBackend
@@ -484,6 +507,7 @@ services:
         SUPPORT_URL: http://email-dustwind:5015/api
         KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
         KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+        KAFKA_SERVER: "${HOST_IP}:9096"
     environment:
       PORT: 8005
       DATABASE_NAME: //postgres-dustwind:5432/${DUSTWIND_POSTGRES_DB}
@@ -499,6 +523,7 @@ services:
       SUPPORT_URL: http://email-dustwind:5015/api
       KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
       KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+      KAFKA_SERVER: "${HOST_IP}:9096"
     ports:
       - "8005:8005"
   ### SENDER SERVICE ###
