@@ -10,3 +10,6 @@
 [submodule "AtomHackFinalEmailService"]
 	path = AtomHackFinalEmailService
 	url = https://github.com/certified-juniors/AtomHackFinalEmailService
+[submodule "AtomHack-Final-senderServer"]
+	path = AtomHack-Final-senderServer
+	url = https://github.com/certified-juniors/AtomHack-Final-senderServer
