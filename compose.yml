@@ -501,7 +501,62 @@ services:
       KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
     ports:
       - "8005:8005"
-
+  ### SENDER SERVICE ###
+  sender-aquarion:
+    build:
+      context: ./AtomHack-Final-senderServer
+    environment:
+      AI_KAFKA: "${HOST_IP}:9092"
+      AI_KAFKA_CONSUMER_TOPIC: "${TOPIC_1}"
+      AI_KAFKA_PRODUCER_TOPIC: "${TOPIC_2}"
+      AI_BASE_URL: "http://ml:8080"
+    depends_on:
+      - ml
+      - kafka-aquarion
+  sender-greenlab:
+    build:
+      context: ./AtomHack-Final-senderServer
+    environment:
+      AI_KAFKA: "${HOST_IP}:9093"
+      AI_KAFKA_CONSUMER_TOPIC: "${TOPIC_1}"
+      AI_KAFKA_PRODUCER_TOPIC: "${TOPIC_2}"
+      AI_BASE_URL: "http://ml:8080"
+    depends_on:
+      - ml
+      - kafka-greenlab
+  sender-terramorf:
+    build:
+      context: ./AtomHack-Final-senderServer
+    environment:
+      AI_KAFKA: "${HOST_IP}:9094"
+      AI_KAFKA_CONSUMER_TOPIC: "${TOPIC_1}"
+      AI_KAFKA_PRODUCER_TOPIC: "${TOPIC_2}"
+      AI_BASE_URL: "http://ml:8080"
+    depends_on:
+      - ml
+      - kafka-terramorf
+  sender-crystalia:
+    build:
+      context: ./AtomHack-Final-senderServer
+    environment:
+      AI_KAFKA: "${HOST_IP}:9095"
+      AI_KAFKA_CONSUMER_TOPIC: "${TOPIC_1}"
+      AI_KAFKA_PRODUCER_TOPIC: "${TOPIC_2}"
+      AI_BASE_URL: "http://ml:8080"
+    depends_on:
+      - ml
+      - kafka-crystalia
+  sender-dustwind:
+    build:
+      context: ./AtomHack-Final-senderServer
+    environment:
+      AI_KAFKA: "${HOST_IP}:9096"
+      AI_KAFKA_CONSUMER_TOPIC: "${TOPIC_1}"
+      AI_KAFKA_PRODUCER_TOPIC: "${TOPIC_2}"
+      AI_BASE_URL: "http://ml:8080"
+    depends_on:
+      - ml
+      - kafka-dustwind
   ### MLs ###
   ml:
     image: botaihack
@@ -526,6 +581,10 @@ services:
       - POSTGRES_HOST=${AUTH_POSTGRES_HOST}
       - POSTGRES_PORT=${AUTH_POSTGRES_PORT}
       - SWAGGER_ADDR=${AUTH_DEPLOYED_AS}
+      - EMAIL_SERVICE_SMTP_HOST=${SMTP_HOST}
+      - EMAIL_SERVICE_SMTP_PORT=${SMTP_PORT}
+      - EMAIL_SERVICE_SMTP_NO_REPLY_USERNAME=${SMTP_NOREPLY_USERNAME}
+      - EMAIL_SERVICE_SMTP_NO_REPLY_PASSWORD=${SMTP_NOREPLY_PASSWORD}
     depends_on:
       - auth-postgres
       - auth-redis
