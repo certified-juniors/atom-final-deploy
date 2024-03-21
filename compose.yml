@@ -693,14 +693,15 @@ services:
       - auth-postgres
       - auth-redis
   auth-postgres:
-    image: postgres:16-alpine
+    image: postgres:15.3-alpine
     restart: always
-    environment:
-      - POSTGRES_USER=${AUTH_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${AUTH_POSTGRES_PASSWORD}
-      - POSTGRES_DB=${AUTH_POSTGRES_DB}
     volumes:
       - auth-db:/var/lib/postgresql/data
+      - ./AtomHackFinalAuthService/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: ${AUTH_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${AUTH_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${AUTH_POSTGRES_DB}
   auth-redis:
     image: redis:alpine
     restart: always
