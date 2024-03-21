@@ -340,6 +340,167 @@ services:
       - EMAIL_SERVICE_SMTP_SUPPORT_USERNAME=${SMTP_SUPPORT_USERNAME}
       - EMAIL_SERVICE_SMTP_NOREPLY_PASSWORD=${SMTP_NOREPLY_PASSWORD}
       - EMAIL_SERVICE_SMTP_SUPPORT_PASSWORD=${SMTP_SUPPORT_PASSWORD}
+  ### BACKENDS ###
+  back-aquarion:
+    build: 
+      context: ./AquarionBackend
+      args:
+        PORT: 8001
+        DATABASE_NAME: //postgres-aquarion:5432/${AQUARION_POSTGRES_DB}
+        DATABASE_USER: ${AQUARION_POSTGRES_USER}
+        DATABASE_PASSWORD: ${AQUARION_POSTGRES_PASSWORD}
+        MINIO_ENDPOINT: ${AQUARION_MINIO_HOST}
+        MINIO_ACCESS_KEY: ${AQUARION_MINIO_ROOT_USER}
+        MINIO_SECRET_KEY: ${AQUARION_MINIO_ROOT_PASSWORD}
+        MINIO_BUCKET: ${AQUARION_MINIO_BUCKET}
+        INIT: true
+        SERVER_NAME: aquarion
+        SECRET: ${JWT_SECRET}
+        SUPPORT_URL: http://email-aquarion:5011/api
+        KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
+        KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+    ports:
+      - "8001:8001"
+    environment:
+      PORT: 8001
+      DATABASE_NAME: //postgres-aquarion:5432/${AQUARION_POSTGRES_DB}
+      DATABASE_USER: ${AQUARION_POSTGRES_USER}
+      DATABASE_PASSWORD: ${AQUARION_POSTGRES_PASSWORD}
+      MINIO_ENDPOINT: ${AQUARION_MINIO_HOST}
+      MINIO_ACCESS_KEY: ${AQUARION_MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${AQUARION_MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${AQUARION_MINIO_BUCKET}
+      INIT: true
+      SERVER_NAME: aquarion
+      SECRET: ${JWT_SECRET}
+      SUPPORT_URL: http://email-aquarion:5011/api
+      KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
+      KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+  back-greenlab:
+    build: 
+      context: ./AquarionBackend
+      args:
+        PORT: 8002
+        DATABASE_NAME: //postgres-greenlab:5432/${GREENLAB_POSTGRES_DB}
+        DATABASE_USER: ${GREENLAB_POSTGRES_USER}
+        DATABASE_PASSWORD: ${GREENLAB_POSTGRES_PASSWORD}
+        MINIO_ENDPOINT: ${GREENLAB_MINIO_HOST}
+        MINIO_ACCESS_KEY: ${GREENLAB_MINIO_ROOT_USER}
+        MINIO_SECRET_KEY: ${GREENLAB_MINIO_ROOT_PASSWORD}
+        MINIO_BUCKET: ${GREENLAB_MINIO_BUCKET}
+        INIT: true
+        SERVER_NAME: green_maze
+        SECRET: ${JWT_SECRET}
+        SUPPORT_URL: http://email-greenlab:5012/api
+        KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
+        KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+    ports:
+      - "8002:8002"
+    environment:
+      PORT: 8002
+      DATABASE_NAME: //postgres-greenlab:5432/${GREENLAB_POSTGRES_DB}
+      DATABASE_USER: ${GREENLAB_POSTGRES_USER}
+      DATABASE_PASSWORD: ${GREENLAB_POSTGRES_PASSWORD}
+      MINIO_ENDPOINT: ${GREENLAB_MINIO_HOST}
+      MINIO_ACCESS_KEY: ${GREENLAB_MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${GREENLAB_MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${GREENLAB_MINIO_BUCKET}
+      INIT: true
+      SERVER_NAME: green_maze
+      SECRET: ${JWT_SECRET}
+      SUPPORT_URL: http://email-greenlab:5012/api
+      KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
+      KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+  # back-terramorf:
+  #   build: 
+  #     context: ./AquarionBackend
+  #     args:
+  #       - PORT: 8003
+  #       - DATABASE_NAME: //postgres-terramorf:5432/${TERRAMORF_POSTGRES_DB}
+  #       - DATABASE_USER: ${TERRAMORF_POSTGRES_USER}
+  #       - DATABASE_PASSWORD: ${TERRAMORF_POSTGRES_PASSWORD}
+  #       - MINIO_ENDPOINT: ${TERRAMORF_MINIO_HOST}
+  #       - MINIO_ACCESS_KEY: ${TERRAMORF_MINIO_ROOT_USER}
+  #       - MINIO_SECRET_KEY: ${TERRAMORF_MINIO_ROOT_PASSWORD}
+  #       - MINIO_BUCKET: ${TERRAMORF_MINIO_BUCKET}
+  #       - INIT: true
+  #       - SERVER_NAME: terramorf
+  #       - SECRET: ${JWT_SECRET}
+  #       - SUPPORT_URL: http://email-terramorf:5013/api
+  #       - KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
+  #       - KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+  #   ports:
+  #     - "8003:8003"
+  back-crystalia:
+    build: 
+      context: ./AquarionBackend
+      args:
+        PORT: 8004
+        DATABASE_NAME: //postgres-crystalia:5432/${CRYSTALIA_POSTGRES_DB}
+        DATABASE_USER: ${CRYSTALIA_POSTGRES_USER}
+        DATABASE_PASSWORD: ${CRYSTALIA_POSTGRES_PASSWORD}
+        MINIO_ENDPOINT: ${CRYSTALIA_MINIO_HOST}
+        MINIO_ACCESS_KEY: ${CRYSTALIA_MINIO_ROOT_USER}
+        MINIO_SECRET_KEY: ${CRYSTALIA_MINIO_ROOT_PASSWORD}
+        MINIO_BUCKET: ${CRYSTALIA_MINIO_BUCKET}
+        INIT: true
+        SERVER_NAME: crystallia
+        SECRET: ${JWT_SECRET}
+        SUPPORT_URL: http://email-crystalia:5014/api
+        KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
+        KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+    ports:
+      - "8004:8004"
+    environment:
+      PORT: 8004
+      DATABASE_NAME: //postgres-crystalia:5432/${CRYSTALIA_POSTGRES_DB}
+      DATABASE_USER: ${CRYSTALIA_POSTGRES_USER}
+      DATABASE_PASSWORD: ${CRYSTALIA_POSTGRES_PASSWORD}
+      MINIO_ENDPOINT: ${CRYSTALIA_MINIO_HOST}
+      MINIO_ACCESS_KEY: ${CRYSTALIA_MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${CRYSTALIA_MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${CRYSTALIA_MINIO_BUCKET}
+      INIT: true
+      SERVER_NAME: crystallia
+      SECRET: ${JWT_SECRET}
+      SUPPORT_URL: http://email-crystalia:5014/api
+      KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
+      KAFKA_READ_FROM_TOPIC: ${TOPIC_2} 
+  back-dustwind:
+    build: 
+      context: ./AquarionBackend
+      args:
+        PORT: 8005
+        DATABASE_NAME: //postgres-dustwind:5432/${DUSTWIND_POSTGRES_DB}
+        DATABASE_USER: ${DUSTWIND_POSTGRES_USER}
+        DATABASE_PASSWORD: ${DUSTWIND_POSTGRES_PASSWORD}
+        MINIO_ENDPOINT: ${DUSTWIND_MINIO_HOST}
+        MINIO_ACCESS_KEY: ${DUSTWIND_MINIO_ROOT_USER}
+        MINIO_SECRET_KEY: ${DUSTWIND_MINIO_ROOT_PASSWORD}
+        MINIO_BUCKET: ${DUSTWIND_MINIO_BUCKET}
+        INIT: true
+        SERVER_NAME: desert_whirlwind
+        SECRET: ${JWT_SECRET}
+        SUPPORT_URL: http://email-dustwind:5015/api
+        KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
+        KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+    environment:
+      PORT: 8005
+      DATABASE_NAME: //postgres-dustwind:5432/${DUSTWIND_POSTGRES_DB}
+      DATABASE_USER: ${DUSTWIND_POSTGRES_USER}
+      DATABASE_PASSWORD: ${DUSTWIND_POSTGRES_PASSWORD}
+      MINIO_ENDPOINT: ${DUSTWIND_MINIO_HOST}
+      MINIO_ACCESS_KEY: ${DUSTWIND_MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${DUSTWIND_MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${DUSTWIND_MINIO_BUCKET}
+      INIT: true
+      SERVER_NAME: desert_whirlwind
+      SECRET: ${JWT_SECRET}
+      SUPPORT_URL: http://email-dustwind:5015/api
+      KAFKA_SEND_TO_TOPIC: ${TOPIC_1}
+      KAFKA_READ_FROM_TOPIC: ${TOPIC_2}
+    ports:
+      - "8005:8005"
   ### MLs ###
   ml:
     image: botaihack
